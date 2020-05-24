@@ -50,12 +50,15 @@
             const textElement = document.querySelector(".subject-text");
 
             textElement.innerHTML = name;
+            loadCustomVoice(voiceText);
+
             document.querySelector("#audio-player").addEventListener('ended', function() {
-                playCustomVoice(voiceText);
+                const subjectVoiceController = document.querySelector("#subject-voice-controller");
+                subjectVoiceController.play();
             });
         });
 
-        function playCustomVoice(voiceText) {
+        function loadCustomVoice(voiceText) {
             const reqBody = {
                 audioConfig: {
                     audioEncoding: "LINEAR16",
@@ -89,7 +92,6 @@
                     subjectVoiceController.volume = 0.4;
 
                     subjectVoiceController.load();
-                    subjectVoiceController.play();
 
                 }).catch(error => {
                     console.error(error);
