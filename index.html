@@ -1,0 +1,118 @@
+<html>
+
+<head>
+    <title>Bayram meets automation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+
+    <style>
+        .root {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .kutlayer-container {
+            width: 700px;
+            margin: auto;
+        }
+
+        .kutlayer-container>img {
+            width: 700px;
+            height: auto;
+        }
+
+        .kutlayer-container>audio {
+            margin: auto;
+        }
+
+        .subject-text {
+            position: relative;
+            bottom: 205px;
+            left: -50px;
+            font-family: 'Indie Flower', cursive;
+            color: #CEA4BA;
+            font-size: 40px;
+            text-transform: capitalize;
+            text-align: center;
+
+
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function(event) {
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const name = urlParams.get('name');
+            let voiceText = urlParams.get('voice');
+            if (!voiceText) {
+                voiceText = name;
+            }
+            const textElement = document.querySelector(".subject-text");
+
+            textElement.innerHTML = name;
+            document.querySelector("#audio-player").addEventListener('ended', function() {
+                playCustomVoice(voiceText);
+            });
+        });
+
+        function playCustomVoice(voiceText) {
+            const reqBody = {
+                audioConfig: {
+                    audioEncoding: "LINEAR16",
+                    pitch: 0,
+                    speakingRate: 1
+                },
+                input: {
+                    text: voiceText,
+                },
+                voice: {
+                    languageCode: "tr-TR",
+                    name: "tr-TR-Wavenet-A"
+                }
+            };
+            fetch('https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=AIzaSyAxA4bQg_XFe2OYrrO7_0Hdhm5D4jlEyG8',
+                {
+                    method: 'POST', body: JSON.stringify(reqBody), headers: { 'content-type': 'application/json' }
+                })
+                .then(response => {
+                    if (response.status === 200) {
+                        return response.json();
+                    } else {
+                        throw new Error('Something went wrong on api server!');
+                    }
+                })
+                .then(response => {
+                    const subjectVoiceSource = document.querySelector("#subject-voice-source");
+                    const subjectVoiceController = document.querySelector("#subject-voice-controller");
+
+                    subjectVoiceSource.src = `data:audio/wav;base64,${response.audioContent}`;
+                    subjectVoiceController.volume = 0.4;
+
+                    subjectVoiceController.load();
+                    subjectVoiceController.play();
+
+                }).catch(error => {
+                    console.error(error);
+                });
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="root">
+        <div class="kutlayer-container">
+            <audio autoplay controls id="audio-player">
+                <source src="kutlayer_voice.ogg">
+            </audio>
+            <img src="kutlayer.jpg" />
+            <div class="subject-text">Loading</div>
+            <audio autobuffer id="subject-voice-controller">
+                <source id="subject-voice-source" src="data:audio/wav;base64,">
+            </audio>
+        </div>
+
+    </div>
+</body>
+
+</html>
