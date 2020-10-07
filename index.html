@@ -47,6 +47,12 @@
             if (!voiceText) {
                 voiceText = name;
             }
+
+            const imgSrc = urlParams.get('image');
+            if (imgSrc) {
+                document.getElementById('kutlama-img').src = imgSrc;
+            }
+
             const textElement = document.querySelector(".subject-text");
 
             textElement.innerHTML = name;
@@ -107,7 +113,7 @@
             <audio autoplay controls id="audio-player">
                 <source src="kutlayer_voice.mp3">
             </audio>
-            <img src="kutlayer.jpg" />
+            <img src="kutlayer.jpg" id="kutlama-img" />
             <div class="subject-text">Loading</div>
             <audio autobuffer id="subject-voice-controller">
                 <source id="subject-voice-source" src="data:audio/wav;base64,">
