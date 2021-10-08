@@ -50,6 +50,20 @@
             const textElement = document.querySelector(".subject-text");
 
             textElement.innerHTML = name;
+
+            let fontSize = "";
+
+            if (name.length <= 5)
+                fontSize = "50px";
+            else if (name.length <= 10)
+                fontSize = "25px";
+            else if (name.length <= 15)
+                fontSize = "18px";
+            else
+                fontSize = "12px";
+
+            textElement.style.fontSize = fontSize;
+
             loadCustomVoice(voiceText);
 
             document.querySelector("#audio-player").addEventListener('ended', function() {
